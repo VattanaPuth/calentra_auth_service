@@ -74,6 +74,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
+
         String accessToken = Jwts.builder()
                            .subject(authResult.getName())
                            .issuedAt(new Date())
@@ -82,7 +83,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                            .issuer("Calentra")
                            .signWith(SignKey.getSecretKey())
                            .compact();
-
         ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
                 .httpOnly(true)
                 .secure(false) // true in production HTTPS
@@ -92,7 +92,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .build();
 
         RefreshToken refreshToken = refreshTokenServiceImpl.createRefreshToken(register.getId());
-
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.getRefreshToken())
                 .httpOnly(true)
                 .secure(false)
@@ -103,7 +102,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
-
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
