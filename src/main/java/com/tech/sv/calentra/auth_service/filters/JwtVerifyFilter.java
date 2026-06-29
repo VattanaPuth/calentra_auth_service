@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +32,27 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
     private final DoFilterInternalValidateRule doFilterInternalValidateRule;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.equals("/auth/register")
+                || path.equals("/auth/login")
+                || path.equals("/auth/refresh");
+    }
+
+    @Override
     protected void doFilterInternal(
                 @NonNull HttpServletRequest request,
                 @NonNull HttpServletResponse response,
                 @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
-        String token = doFilterInternalValidateRule.authHeaderValidate(request);
+        String accessToken = getAccessTokenFromCookie(request);
 
-        if (token == null) {
+        if (accessToken == null) {
+            accessToken = doFilterInternalValidateRule.authHeaderValidate(request);
+        }
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,18 +60,34 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
         Jws<Claims> claimJws = Jwts.parser()
                 .verifyWith(SignKey.getSecretKey())
                 .build()
-                .parseSignedClaims(token);
+                .parseSignedClaims(accessToken);
 
         Claims body = claimJws.getPayload();
         String username = body.getSubject();
 
-        List<Map<String, String>> authorities = (List<Map<String, String>>) body.get("authorities");
-        Set<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
-						.map(authority -> new SimpleGrantedAuthority(authority.get("authority")))
-						.collect(Collectors.toSet());
+        List<String> authorities = body.get("authorities", List.class);
+        Set<SimpleGrantedAuthority> grantedAuthorities = authorities == null
+                ? Set.of()
+                : authorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
 
         Authentication getAuthentication = new UsernamePasswordAuthenticationToken(username, null, grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(getAuthentication);
         filterChain.doFilter(request, response);
+    }
+
+    private String getAccessTokenFromCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+
+        for (Cookie cookie : request.getCookies()) {
+            if ("access_token".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 }

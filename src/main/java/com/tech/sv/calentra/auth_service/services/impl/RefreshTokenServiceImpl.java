@@ -44,7 +44,16 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public RefreshToken refreshToken(String requestToken) {
+    public Map<String, String> refreshToken(String requestToken) {
+
+        RefreshToken token = refreshTokenRepository.findByRefreshToken(requestToken)
+                .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token."));
+
+        if (isTokenExpired(token)) {
+            refreshTokenRepository.delete(token);
+            throw new InvalidRefreshTokenException("Refresh token expired. Please login again.");
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getSubject = authentication.getName();
         List<String> authorities = authentication.getAuthorities()
@@ -52,21 +61,15 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        return (RefreshToken) refreshTokenRepository.findByRefreshToken(requestToken)
-                .map(token -> {
-                    if (isTokenExpired(token)) {
-                        refreshTokenRepository.delete(token);
-                        return ResponseEntity.badRequest().body("Refresh token expired. Please login again.");
-                    }
-                    String newJwt = Jwts.builder()
-                                    .subject(getSubject)
-                                    .issuedAt(new Date())
-                                    .claim("authorities", authorities)
-                                    .expiration(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
-                                    .issuer("Calentra")
-                                    .signWith(SignKey.getSecretKey())
-                                    .compact();
-                    return Map.of("token", newJwt);
-                }).orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token."));
+        String newJwt = Jwts.builder()
+                .subject(getSubject)
+                .issuedAt(new Date())
+                .claim("authorities", authorities)
+                .expiration(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
+                .issuer("Calentra")
+                .signWith(SignKey.getSecretKey())
+                .compact();
+
+        return Map.of("token", newJwt);
     }
 }

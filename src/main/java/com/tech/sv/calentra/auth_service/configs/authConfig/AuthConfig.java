@@ -56,8 +56,9 @@ public class AuthConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(getAuthenticationProvider())
                 .authorizeHttpRequests(rq -> rq
-                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/logout").access(new WebExpressionAuthorizationManager("isAuthenticated()"))
+                        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout")
+                        .access(new WebExpressionAuthorizationManager("isAuthenticated()"))
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtVerifyFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
