@@ -7,9 +7,9 @@ import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtValidateUsernamePassword;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtMaxAttempt;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateContentLength;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateUsernamePassword;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtMaxAttempt;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -17,7 +17,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +27,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -152,6 +150,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             }
         }
 
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("""

@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.mapper;
+package com.tech.sv.calentra.auth_service.mappers;
 
 import com.tech.sv.calentra.auth_service.dtos.requests.RegisterRequestDTO;
 import com.tech.sv.calentra.auth_service.dtos.responses.RegisterResponseDTO;

@@ -4,13 +4,13 @@ import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
 import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.DoFilterInternalValidateRule;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtMaxAttempt;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl.JwtValidateUsernamePassword;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.TokenExtractor;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtAuthHeader;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtMaxAttempt;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateContentLength;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateUsernamePassword;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -45,7 +45,7 @@ public class AuthConfig {
     private final JwtMaxAttempt jwtMaxAttempt;
     private final RegisterRepository registerRepository;
     private final RefreshTokenService refreshTokenServiceImpl;
-    private final DoFilterInternalValidateRule doFilterInternalValidateRule;
+    private final JwtAuthHeader tokenExtractor;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -93,7 +93,7 @@ public class AuthConfig {
 
     @Bean
     public JwtVerifyFilter jwtVerifyFilter(){
-        return new JwtVerifyFilter(doFilterInternalValidateRule);
+        return new JwtVerifyFilter(tokenExtractor);
     }
 
     @Bean

@@ -1,13 +1,12 @@
-package com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl;
+package com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl;
 
 import com.tech.sv.calentra.auth_service.dtos.requests.LoginRequestDTO;
 import com.tech.sv.calentra.auth_service.exceptions.ValidateException;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.HttpRequestValidateRule;
-import org.springframework.stereotype.Component;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.ValidationRule;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtValidateUsernamePassword implements HttpRequestValidateRule<LoginRequestDTO> {
+public class JwtValidateUsernamePassword implements ValidationRule<LoginRequestDTO> {
     @Override
     public void validate(LoginRequestDTO loginRequest) {
         if(loginRequest.getEmail() == null ||

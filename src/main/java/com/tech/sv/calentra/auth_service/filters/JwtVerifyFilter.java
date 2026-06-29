@@ -1,6 +1,6 @@
 package com.tech.sv.calentra.auth_service.filters;
 
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.DoFilterInternalValidateRule;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtAuthHeader;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -14,22 +14,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JwtVerifyFilter extends OncePerRequestFilter {
 
-    private final DoFilterInternalValidateRule doFilterInternalValidateRule;
+    private final JwtAuthHeader tokenExtractor;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -50,8 +47,9 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
         String accessToken = getAccessTokenFromCookie(request);
 
         if (accessToken == null) {
-            accessToken = doFilterInternalValidateRule.authHeaderValidate(request);
+            accessToken = tokenExtractor.extract(request);
         }
+
         if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;

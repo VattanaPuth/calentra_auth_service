@@ -1,11 +1,9 @@
 package com.tech.sv.calentra.auth_service.controllers;
 
-import com.tech.sv.calentra.auth_service.dtos.requests.RefreshTokenRequestDTO;
 import com.tech.sv.calentra.auth_service.dtos.requests.RegisterRequestDTO;
-import com.tech.sv.calentra.auth_service.entities.RefreshToken;
 import com.tech.sv.calentra.auth_service.entities.Register;
-import com.tech.sv.calentra.auth_service.mapper.RefreshTokenMapper;
-import com.tech.sv.calentra.auth_service.mapper.RegisterMapper;
+import com.tech.sv.calentra.auth_service.mappers.RefreshTokenMapper;
+import com.tech.sv.calentra.auth_service.mappers.RegisterMapper;
 import com.tech.sv.calentra.auth_service.services.LogoutService;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
 import com.tech.sv.calentra.auth_service.services.RegisterService;

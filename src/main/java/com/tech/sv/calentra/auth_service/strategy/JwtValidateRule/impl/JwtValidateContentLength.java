@@ -1,13 +1,12 @@
-package com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl;
+package com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl;
 
 import com.tech.sv.calentra.auth_service.exceptions.ValidateException;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.HttpRequestValidateRule;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.ValidationRule;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JwtValidateContentLength implements HttpRequestValidateRule<HttpServletRequest> {
+public class JwtValidateContentLength implements ValidationRule<HttpServletRequest> {
 
     @Override
     public void validate(HttpServletRequest request) {

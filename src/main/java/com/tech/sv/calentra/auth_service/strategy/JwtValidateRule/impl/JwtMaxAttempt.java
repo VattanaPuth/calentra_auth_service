@@ -1,13 +1,11 @@
-package com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.impl;
+package com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl;
 
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.strategy.HttpRequestValidateRule.HttpRequestValidateRule;
-import jakarta.transaction.Transactional;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.ValidationRule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,7 +14,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class JwtMaxAttempt implements HttpRequestValidateRule<Register> {
+public class JwtMaxAttempt implements ValidationRule<Register> {
 
     private final RegisterRepository registerRepository;
 
@@ -72,7 +70,6 @@ public class JwtMaxAttempt implements HttpRequestValidateRule<Register> {
 
         registerRepository.save(register);
     }
-
 
     public void resetFailedAttempts(Register register) {
         if (register == null) {
