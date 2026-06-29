@@ -82,8 +82,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                            .signWith(SignKey.getSecretKey())
                            .compact();
 
-        RefreshToken refreshToken = refreshTokenServiceImpl.createRefreshToken(register.getId());
-
         ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
                 .httpOnly(true)
                 .secure(false) // true in production HTTPS
@@ -91,6 +89,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .path("/")
                 .maxAge(Duration.ofMinutes(15))
                 .build();
+
+        RefreshToken refreshToken = refreshTokenServiceImpl.createRefreshToken(register.getId());
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.getRefreshToken())
                 .httpOnly(true)
