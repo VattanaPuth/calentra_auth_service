@@ -6,7 +6,7 @@ spring:
     name: calentra
 
   config:
-    import: "file:.env[.properties]"
+    import: "classpath:env.yaml"
 
   datasource:
     url: ${DATASOURCE_URL}
