@@ -18,6 +18,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -70,7 +73,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
-        String token = Jwts.builder()
+        String accessToken = Jwts.builder()
                            .subject(authResult.getName())
                            .issuedAt(new Date())
                            .claim("authorities", authorities)
@@ -81,16 +84,34 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         RefreshToken refreshToken = refreshTokenServiceImpl.createRefreshToken(register.getId());
 
+        ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
+                .httpOnly(true)
+                .secure(false) // true in production HTTPS
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ofMinutes(15))
+                .build();
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.getRefreshToken())
+                .httpOnly(true)
+                .secure(false) // true in production HTTPS
+                .sameSite("Lax")
+                .path("/auth")
+                .maxAge(Duration.ofDays(7))
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         String jsonResponse = """
             {
-                "token": "%s",
-                "refreshToken": "%s",
+                "message": "Login successful",
                 "tokenType": "Bearer"
             }
-            """.formatted(token, refreshToken.getRefreshToken());
+            """;
         response.getWriter().write(jsonResponse);
         response.getWriter().flush();
     }
