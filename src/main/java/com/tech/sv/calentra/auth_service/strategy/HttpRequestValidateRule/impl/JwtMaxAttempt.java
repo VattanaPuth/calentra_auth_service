@@ -10,33 +10,48 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 @Service
 @RequiredArgsConstructor
 public class JwtMaxAttempt implements HttpRequestValidateRule<Register> {
 
     private final RegisterRepository registerRepository;
+
     private final int maxLoginAttempts = 5;
+    private final int lockMinutes = 15;
 
     @Override
     public void validate(Register register) {
-
-        if (Boolean.FALSE.equals(register.getIsAccountNonLocked())) {
-            throw new LockedException("Account is locked");
+        if (register == null) {
+            throw new ResourceNotFoundException("Register is null");
         }
 
-        int failedAttempts = register.getFailedLoginAttempts() == null
-                ? 0
-                : register.getFailedLoginAttempts();
-
-        if (failedAttempts >= maxLoginAttempts) {
-            register.setIsAccountNonLocked(false);
-            registerRepository.save(register);
-
-            throw new LockedException("Too many failed login attempts");
+        if (!Boolean.FALSE.equals(register.getIsAccountNonLocked())) {
+            return;
         }
+
+        LocalDateTime lockUntil = register.getLockUntil();
+
+        if (lockUntil == null) {
+            unlock(register);
+            return;
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(
+                "dd MMM yyyy hh:mm a",
+                Locale.ENGLISH
+        );
+
+        if (lockUntil.isAfter(LocalDateTime.now())) {
+            throw new LockedException("Account is locked until " + lockUntil.format(formatter));
+        }
+
+        unlock(register);
     }
 
-    @Transactional
     public void increaseFailedAttempts(Register register) {
         if (register == null) {
             throw new ResourceNotFoundException("Register is null");
@@ -47,25 +62,32 @@ public class JwtMaxAttempt implements HttpRequestValidateRule<Register> {
                 : register.getFailedLoginAttempts();
 
         failedAttempts++;
+
         register.setFailedLoginAttempts(failedAttempts);
 
         if (failedAttempts >= maxLoginAttempts) {
             register.setIsAccountNonLocked(false);
+            register.setLockUntil(LocalDateTime.now().plusMinutes(lockMinutes));
         }
 
         registerRepository.save(register);
     }
 
-    @Transactional
+
     public void resetFailedAttempts(Register register) {
         if (register == null) {
             throw new ResourceNotFoundException("Register is null");
         }
 
+        unlock(register);
+    }
+
+    private void unlock(Register register) {
         register.setFailedLoginAttempts(0);
         register.setIsAccountNonLocked(true);
+        register.setLockUntil(null);
 
         registerRepository.save(register);
     }
-
 }
+

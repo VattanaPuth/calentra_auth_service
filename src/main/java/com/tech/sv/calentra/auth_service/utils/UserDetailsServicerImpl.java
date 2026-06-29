@@ -24,7 +24,7 @@ public class UserDetailsServicerImpl implements UserDetailsService {
                 .email(register.getEmail())
                 .password(register.getPassword())
                 .authorities(register.getRole().getAuthorities()) // ROLE & PERMISSION
-                .isAccountNonExpired(register.getIsAccountNonExpired())
+                .isAccountNonExpired(Boolean.TRUE.equals(register.getIsAccountNonExpired()))
                 .isAccountNonLocked(register.getIsAccountNonLocked())
                 .isCredentialsNonExpired(register.getIsCredentialsNonExpired())
                 .isEnabled(register.getIsEnabled())

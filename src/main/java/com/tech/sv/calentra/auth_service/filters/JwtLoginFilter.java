@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -119,14 +120,45 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         String email = (String) request.getAttribute("LOGIN_EMAIL");
+
+        if (failed instanceof LockedException) {
+            response.setStatus(423); // Locked
+
+            response.getWriter().write("""
+            {
+                "status": "LOCKED",
+                "message": "%s"
+            }
+            """.formatted(failed.getMessage()));
+
+            response.getWriter().flush();
+            return;
+        }
+
         if (email != null) {
             registerRepository.findByEmail(email).ifPresent(jwtMaxAttempt::increaseFailedAttempts);
+            Register updatedRegister = registerRepository.findByEmail(email).orElse(null);
+
+            if (updatedRegister != null && Boolean.FALSE.equals(updatedRegister.getIsAccountNonLocked())) {
+                response.setStatus(423);
+
+                response.getWriter().write("""
+                {
+                    "status": "LOCKED",
+                    "message": "Too many failed login attempts. Account locked for 15 minutes"
+                }
+                """);
+
+                response.getWriter().flush();
+                return;
+            }
         }
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("""
             {
+                "status": "UNAUTHORIZED",
                 "message": "Invalid email or password"
             }
             """);

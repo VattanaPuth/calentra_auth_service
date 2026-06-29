@@ -4,6 +4,7 @@ import com.tech.sv.calentra.auth_service.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -29,6 +30,7 @@ public class Register extends JpaAuditor {
 
     @Column(nullable = false)
     private Integer failedLoginAttempts = 0;
+    private LocalDateTime lockUntil;
 
     private Boolean isAccountNonExpired = true;
     private Boolean isAccountNonLocked = true;
