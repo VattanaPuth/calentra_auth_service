@@ -95,7 +95,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.getRefreshToken())
                 .httpOnly(true)
-                .secure(false) // true in production HTTPS
+                .secure(false)
                 .sameSite("Lax")
                 .path("/auth")
                 .maxAge(Duration.ofDays(7))
