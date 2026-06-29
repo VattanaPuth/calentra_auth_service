@@ -1,16 +1,7 @@
 package com.tech.sv.calentra.auth_service.configs.authConfig;
 
-import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
-import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
-import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.TokenExtractor;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtAuthHeader;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtMaxAttempt;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateUsernamePassword;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,7 +23,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
+import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
+import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
+import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtAuthHeader;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtMaxAttempt;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateContentLength;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateUsernamePassword;
+
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity

@@ -1,22 +1,12 @@
 package com.tech.sv.calentra.auth_service.filters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tech.sv.calentra.auth_service.dtos.requests.LoginRequestDTO;
-import com.tech.sv.calentra.auth_service.entities.RefreshToken;
-import com.tech.sv.calentra.auth_service.entities.Register;
-import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
-import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtValidateUsernamePassword;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl.JwtMaxAttempt;
-import com.tech.sv.calentra.auth_service.utils.SignKey;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,12 +18,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tech.sv.calentra.auth_service.dtos.requests.LoginRequestDTO;
+import com.tech.sv.calentra.auth_service.entities.RefreshToken;
+import com.tech.sv.calentra.auth_service.entities.Register;
+import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
+import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
+import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtMaxAttempt;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateContentLength;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateUsernamePassword;
+import com.tech.sv.calentra.auth_service.utils.SignKey;
+
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {

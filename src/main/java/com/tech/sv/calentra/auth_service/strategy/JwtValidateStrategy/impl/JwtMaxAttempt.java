@@ -1,16 +1,19 @@
-package com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl;
+package com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl;
 
-import com.tech.sv.calentra.auth_service.entities.Register;
-import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
-import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.ValidationRule;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import org.springframework.security.authentication.LockedException;
+import org.springframework.stereotype.Service;
+
+import com.tech.sv.calentra.auth_service.entities.Register;
+import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
+import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.ValidationRule;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

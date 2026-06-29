@@ -1,8 +1,10 @@
-package com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.impl;
+package com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl;
 
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateRule.TokenExtractor;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
+
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.TokenExtractor;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class JwtAuthHeader implements TokenExtractor<HttpServletRequest, String>{
