@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.handler;
+package com.tech.sv.calentra.auth_service.handlers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

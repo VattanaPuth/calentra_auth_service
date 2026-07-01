@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AuthHeaderValidation;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AuthHeaderValidationStrategy;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 
 import io.jsonwebtoken.Claims;
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtVerifyFilter extends OncePerRequestFilter {
 
-    private final AuthHeaderValidation tokenExtractor;
+    private final AuthHeaderValidationStrategy tokenExtractor;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {

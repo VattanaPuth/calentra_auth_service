@@ -1,13 +1,13 @@
-package com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl;
+package com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.TokenExtractor;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.TokenExtractorStrategy;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class AuthHeaderValidation implements TokenExtractor<HttpServletRequest, String>{
+public class AuthHeaderValidationStrategy implements TokenExtractorStrategy<HttpServletRequest, String> {
 
     private static final String BEARER_PREFIX = "Bearer ";
 

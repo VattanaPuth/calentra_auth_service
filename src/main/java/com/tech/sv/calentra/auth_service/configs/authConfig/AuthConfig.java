@@ -27,10 +27,10 @@ import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
 import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AuthHeaderValidation;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AttemptsValidation;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.ContentLengthValidation;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.UsernamePasswordValidation;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AuthHeaderValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AttemptsValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.ContentLengthValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.UsernamePasswordValidationStrategy;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +41,12 @@ import lombok.RequiredArgsConstructor;
 public class AuthConfig {
 
     private final UserDetailsService userDetailsService;
-    private final ContentLengthValidation contentLengthValidation;
-    private final UsernamePasswordValidation usernamePasswordValidation;
-    private final AttemptsValidation attemptsValidation;
+    private final ContentLengthValidationStrategy contentLengthValidation;
+    private final UsernamePasswordValidationStrategy usernamePasswordValidation;
+    private final AttemptsValidationStrategy attemptsValidation;
     private final RegisterRepository registerRepository;
     private final RefreshTokenService refreshTokenServiceImpl;
-    private final AuthHeaderValidation tokenExtractor;
+    private final AuthHeaderValidationStrategy tokenExtractor;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean

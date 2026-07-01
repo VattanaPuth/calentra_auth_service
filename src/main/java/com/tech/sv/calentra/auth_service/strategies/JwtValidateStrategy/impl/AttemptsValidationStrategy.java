@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl;
+package com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl;
 
 
 import java.time.LocalDateTime;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.ValidationRule;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.ValidationRuleStrategy;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AttemptsValidation implements ValidationRule<Register> {
+public class AttemptsValidationStrategy implements ValidationRuleStrategy<Register> {
 
     private final RegisterRepository registerRepository;
 

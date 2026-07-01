@@ -61,7 +61,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        String newJwt = Jwts.builder()
+            Jwts.builder()
                 .subject(getSubject)
                 .issuedAt(new Date())
                 .claim("authorities", authorities)

@@ -25,9 +25,9 @@ import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AttemptsValidation;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.ContentLengthValidation;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.UsernamePasswordValidation;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AttemptsValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.ContentLengthValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.UsernamePasswordValidationStrategy;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 
 import io.jsonwebtoken.Jwts;
@@ -40,9 +40,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final ContentLengthValidation contentLengthValidation;
-    private final UsernamePasswordValidation usernamePasswordValidation;
-    private final AttemptsValidation attemptsValidation;
+    private final ContentLengthValidationStrategy contentLengthValidation;
+    private final UsernamePasswordValidationStrategy usernamePasswordValidation;
+    private final AttemptsValidationStrategy attemptsValidation;
     private final RegisterRepository registerRepository;
     private final RefreshTokenService refreshTokenServiceImpl;
     private final AuthenticationManager authenticationManager;
