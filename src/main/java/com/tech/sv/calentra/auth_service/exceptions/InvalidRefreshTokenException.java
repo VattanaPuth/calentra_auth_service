@@ -1,10 +1,9 @@
 package com.tech.sv.calentra.auth_service.exceptions;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-public class InvalidRefreshTokenException extends ApiException{
-
-    public InvalidRefreshTokenException(String msg) {
-        super(HttpStatus.FORBIDDEN, msg);
-    }
+@Data
+public class InvalidRefreshTokenException extends RuntimeException{
+    private String message;
 }

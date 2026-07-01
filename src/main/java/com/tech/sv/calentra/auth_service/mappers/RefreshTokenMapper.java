@@ -10,5 +10,5 @@ import java.util.Map;
 @Mapper(componentModel = "spring")
 public interface RefreshTokenMapper {
     RefreshToken toRefreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO);
-    RefreshTokenResponseDTO tofreRefreshTokenResponseDto(Map<String, String> refreshToken);
+    RefreshTokenResponseDTO tofreRefreshTokenResponseDto(RefreshToken refreshToken);
 }

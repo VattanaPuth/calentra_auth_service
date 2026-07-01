@@ -44,14 +44,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public Map<String, String> refreshToken(String requestToken) {
+    public RefreshToken refreshToken(String requestToken) {
 
         RefreshToken token = refreshTokenRepository.findByRefreshToken(requestToken)
-                .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token."));
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         if (isTokenExpired(token)) {
             refreshTokenRepository.delete(token);
-            throw new InvalidRefreshTokenException("Refresh token expired. Please login again.");
+            throw new InvalidRefreshTokenException();
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,6 +70,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .signWith(SignKey.getSecretKey())
                 .compact();
 
-        return Map.of("token", newJwt);
+        return token;
     }
 }

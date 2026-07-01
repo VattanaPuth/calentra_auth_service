@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class JwtMaxAttempt implements ValidationRule<Register> {
+public class AttemptsValidation implements ValidationRule<Register> {
 
     private final RegisterRepository registerRepository;
 
@@ -27,7 +27,7 @@ public class JwtMaxAttempt implements ValidationRule<Register> {
     @Override
     public void validate(Register register) {
         if (register == null) {
-            throw new ResourceNotFoundException("Register is null");
+            throw new ResourceNotFoundException();
         }
 
         if (!Boolean.FALSE.equals(register.getIsAccountNonLocked())) {
@@ -55,7 +55,7 @@ public class JwtMaxAttempt implements ValidationRule<Register> {
 
     public void increaseFailedAttempts(Register register) {
         if (register == null) {
-            throw new ResourceNotFoundException("Register is null");
+            throw new ResourceNotFoundException();
         }
 
         int failedAttempts = register.getFailedLoginAttempts() == null
@@ -76,7 +76,7 @@ public class JwtMaxAttempt implements ValidationRule<Register> {
 
     public void resetFailedAttempts(Register register) {
         if (register == null) {
-            throw new ResourceNotFoundException("Register is null");
+            throw new ResourceNotFoundException();
         }
 
         unlock(register);

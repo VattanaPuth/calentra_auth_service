@@ -7,7 +7,7 @@ import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.TokenExtra
 import jakarta.servlet.http.HttpServletRequest;
 
 @Service
-public class JwtAuthHeader implements TokenExtractor<HttpServletRequest, String>{
+public class AuthHeaderValidation implements TokenExtractor<HttpServletRequest, String>{
 
     private static final String BEARER_PREFIX = "Bearer ";
 

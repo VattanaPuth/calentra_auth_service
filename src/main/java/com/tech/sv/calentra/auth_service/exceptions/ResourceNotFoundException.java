@@ -1,13 +1,10 @@
 package com.tech.sv.calentra.auth_service.exceptions;
 
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
-public class ResourceNotFoundException extends ApiException{
-    public ResourceNotFoundException(String msg) {
-        super(HttpStatus.NOT_FOUND , "");
-    }
-
-    public ResourceNotFoundException(HttpStatus status, String msg) {
-        super(status, msg);
-    }
+@Data
+public class ResourceNotFoundException extends RuntimeException{
+    private String message;
 }
+

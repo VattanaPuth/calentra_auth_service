@@ -20,11 +20,11 @@ public class LogoutServiceImpl implements LogoutService {
     @Override
     public Map<String, String> logout(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new ResourceNotFoundException("Invalid Refresh Token");
+            throw new ResourceNotFoundException();
         }
 
         RefreshToken token = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new InvalidRefreshTokenException("Invalid refresh token."));
+                .orElseThrow(InvalidRefreshTokenException::new);
 
         refreshTokenRepository.delete(token);
 

@@ -27,10 +27,10 @@ import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
 import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtAuthHeader;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtMaxAttempt;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateUsernamePassword;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AuthHeaderValidation;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AttemptsValidation;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.ContentLengthValidation;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.UsernamePasswordValidation;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +41,12 @@ import lombok.RequiredArgsConstructor;
 public class AuthConfig {
 
     private final UserDetailsService userDetailsService;
-    private final JwtValidateContentLength jwtValidateContentLength;
-    private final JwtValidateUsernamePassword jwtValidateUsernamePassword;
-    private final JwtMaxAttempt jwtMaxAttempt;
+    private final ContentLengthValidation contentLengthValidation;
+    private final UsernamePasswordValidation usernamePasswordValidation;
+    private final AttemptsValidation attemptsValidation;
     private final RegisterRepository registerRepository;
     private final RefreshTokenService refreshTokenServiceImpl;
-    private final JwtAuthHeader tokenExtractor;
+    private final AuthHeaderValidation tokenExtractor;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
@@ -79,9 +79,9 @@ public class AuthConfig {
     @Bean
     public JwtLoginFilter jwtLoginFilter() throws Exception {
         JwtLoginFilter filter =  new JwtLoginFilter(
-                jwtValidateContentLength,
-                jwtValidateUsernamePassword,
-                jwtMaxAttempt,
+                contentLengthValidation,
+                usernamePasswordValidation,
+                attemptsValidation,
                 registerRepository,
                 refreshTokenServiceImpl,
                 getAuthenticationManager()

@@ -1,6 +1,7 @@
 package com.tech.sv.calentra.auth_service.controllers;
 
 import com.tech.sv.calentra.auth_service.dtos.requests.RegisterRequestDTO;
+import com.tech.sv.calentra.auth_service.entities.RefreshToken;
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.mappers.RefreshTokenMapper;
 import com.tech.sv.calentra.auth_service.mappers.RegisterMapper;
@@ -40,7 +41,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Refresh token missing");
         }
-        Map<String, String> newRefreshToken = refreshTokenServiceImpl.refreshToken(refreshToken);
+        RefreshToken newRefreshToken = refreshTokenServiceImpl.refreshToken(refreshToken);
         return ResponseEntity.status(HttpStatus.CREATED).body(refreshTokenMapper.tofreRefreshTokenResponseDto(newRefreshToken));
     }
 

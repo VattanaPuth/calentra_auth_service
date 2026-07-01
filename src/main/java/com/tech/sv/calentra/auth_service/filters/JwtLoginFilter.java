@@ -25,9 +25,9 @@ import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtMaxAttempt;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateContentLength;
-import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.JwtValidateUsernamePassword;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.AttemptsValidation;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.ContentLengthValidation;
+import com.tech.sv.calentra.auth_service.strategy.JwtValidateStrategy.impl.UsernamePasswordValidation;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 
 import io.jsonwebtoken.Jwts;
@@ -40,9 +40,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final JwtValidateContentLength jwtValidateContentLength;
-    private final JwtValidateUsernamePassword jwtValidateUsernamePassword;
-    private final JwtMaxAttempt jwtMaxAttempt;
+    private final ContentLengthValidation contentLengthValidation;
+    private final UsernamePasswordValidation usernamePasswordValidation;
+    private final AttemptsValidation attemptsValidation;
     private final RegisterRepository registerRepository;
     private final RefreshTokenService refreshTokenServiceImpl;
     private final AuthenticationManager authenticationManager;
@@ -50,13 +50,13 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         ObjectMapper objMapper = new ObjectMapper();
-        jwtValidateContentLength.validate(request);
+        contentLengthValidation.validate(request);
         try {
             LoginRequestDTO loginRequest = objMapper.readValue(request.getInputStream(), LoginRequestDTO.class);
-            jwtValidateUsernamePassword.validate(loginRequest);
+            usernamePasswordValidation.validate(loginRequest);
             request.setAttribute("LOGIN_EMAIL", loginRequest.getEmail());
-            Register register = registerRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Email Not Found"));
-            jwtMaxAttempt.validate(register);
+            Register register = registerRepository.findByEmail(loginRequest.getEmail()).orElseThrow(ResourceNotFoundException::new);
+            attemptsValidation.validate(register);
             Authentication auth = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
             return authenticationManager.authenticate(auth);
         } catch (IOException e) {
@@ -68,8 +68,8 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         SecurityContextHolder.getContext().setAuthentication(authResult);
         String email = authResult.getName();
-        Register register = registerRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("Email Not Found"));
-        jwtMaxAttempt.resetFailedAttempts(register);
+        Register register = registerRepository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
+        attemptsValidation.resetFailedAttempts(register);
         List<String> authorities = authResult.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -134,7 +134,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         }
 
         if (email != null) {
-            registerRepository.findByEmail(email).ifPresent(jwtMaxAttempt::increaseFailedAttempts);
+            registerRepository.findByEmail(email).ifPresent(attemptsValidation::increaseFailedAttempts);
             Register updatedRegister = registerRepository.findByEmail(email).orElse(null);
 
             if (updatedRegister != null && Boolean.FALSE.equals(updatedRegister.getIsAccountNonLocked())) {
