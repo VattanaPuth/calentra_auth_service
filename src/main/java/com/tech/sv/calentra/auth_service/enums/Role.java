@@ -1,14 +1,29 @@
 package com.tech.sv.calentra.auth_service.enums;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import static com.tech.sv.calentra.auth_service.enums.Permission.ADMIN_DELETE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.ADMIN_READ;
+import static com.tech.sv.calentra.auth_service.enums.Permission.ADMIN_UPDATE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.ADMIN_WRITE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.GUEST_DELETE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.GUEST_READ;
+import static com.tech.sv.calentra.auth_service.enums.Permission.GUEST_UPDATE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.GUEST_WRITE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.HOUSEKEEPING_DELETE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.HOUSEKEEPING_READ;
+import static com.tech.sv.calentra.auth_service.enums.Permission.HOUSEKEEPING_UPDATE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.HOUSEKEEPING_WRITE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.STAFF_DELETE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.STAFF_READ;
+import static com.tech.sv.calentra.auth_service.enums.Permission.STAFF_UPDATE;
+import static com.tech.sv.calentra.auth_service.enums.Permission.STAFF_WRITE;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.tech.sv.calentra.auth_service.enums.Permission.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Role {
