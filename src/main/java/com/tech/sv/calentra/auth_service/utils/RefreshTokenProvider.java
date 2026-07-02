@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.utils.TokenUtil;
+package com.tech.sv.calentra.auth_service.utils;
 
 import java.time.Duration;
 import java.util.UUID;

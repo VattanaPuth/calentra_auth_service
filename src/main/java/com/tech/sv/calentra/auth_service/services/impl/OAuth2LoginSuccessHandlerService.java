@@ -18,8 +18,8 @@ import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.strategies.Oauth2.Oauth2ProvidersStrategy;
-import com.tech.sv.calentra.auth_service.utils.TokenUtil.AccessTokenProvider;
-import com.tech.sv.calentra.auth_service.utils.TokenUtil.RefreshTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.AccessTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.RefreshTokenProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

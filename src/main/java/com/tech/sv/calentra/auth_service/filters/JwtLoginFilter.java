@@ -21,8 +21,8 @@ import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AttemptsValidationStrategy;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.ContentLengthValidationStrategy;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.UsernamePasswordValidationStrategy;
-import com.tech.sv.calentra.auth_service.utils.TokenUtil.AccessTokenProvider;
-import com.tech.sv.calentra.auth_service.utils.TokenUtil.RefreshTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.AccessTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.RefreshTokenProvider;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

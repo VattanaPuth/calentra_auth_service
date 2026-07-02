@@ -12,7 +12,7 @@ import com.tech.sv.calentra.auth_service.exceptions.InvalidRefreshTokenException
 import com.tech.sv.calentra.auth_service.repositories.RefreshTokenRepository;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.utils.TokenUtil.AccessTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.AccessTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 

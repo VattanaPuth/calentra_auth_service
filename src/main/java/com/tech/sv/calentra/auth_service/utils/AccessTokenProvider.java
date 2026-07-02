@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.utils.TokenUtil;
+package com.tech.sv.calentra.auth_service.utils;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -10,8 +10,6 @@ import java.util.List;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-
-import com.tech.sv.calentra.auth_service.utils.SignKey;
 
 import io.jsonwebtoken.Jwts;
 
