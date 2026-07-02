@@ -1,9 +1,10 @@
-package com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl;
+package com.tech.sv.calentra.auth_service.strategies.Jwt.impl;
 import com.tech.sv.calentra.auth_service.exceptions.InvalidUsernamePasswordException;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.ValidationRuleStrategy;
+
 import org.springframework.stereotype.Service;
 
 import com.tech.sv.calentra.auth_service.dtos.requests.LoginRequestDTO;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.ValidationRuleStrategy;
 
 @Service
 public class UsernamePasswordValidationStrategy implements ValidationRuleStrategy<LoginRequestDTO> {

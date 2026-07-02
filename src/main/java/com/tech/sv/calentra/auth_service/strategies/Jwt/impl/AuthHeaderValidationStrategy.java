@@ -1,8 +1,8 @@
-package com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl;
+package com.tech.sv.calentra.auth_service.strategies.Jwt.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.TokenExtractorStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.TokenExtractorStrategy;
 
 import jakarta.servlet.http.HttpServletRequest;
 

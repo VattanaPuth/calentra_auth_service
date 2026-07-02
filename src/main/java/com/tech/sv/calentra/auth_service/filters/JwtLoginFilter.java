@@ -1,11 +1,6 @@
 package com.tech.sv.calentra.auth_service.filters;
 
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -14,7 +9,6 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -24,13 +18,12 @@ import com.tech.sv.calentra.auth_service.entities.RefreshToken;
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.exceptions.ResourceNotFoundException;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AttemptsValidationStrategy;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.ContentLengthValidationStrategy;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.UsernamePasswordValidationStrategy;
-import com.tech.sv.calentra.auth_service.utils.SignKey;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AttemptsValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.ContentLengthValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.UsernamePasswordValidationStrategy;
+import com.tech.sv.calentra.auth_service.utils.TokenUtil.AccessTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.TokenUtil.RefreshTokenProvider;
 
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,8 +37,9 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     private final UsernamePasswordValidationStrategy usernamePasswordValidation;
     private final AttemptsValidationStrategy attemptsValidation;
     private final RegisterRepository registerRepository;
-    private final RefreshTokenService refreshTokenServiceImpl;
     private final AuthenticationManager authenticationManager;
+    private final AccessTokenProvider accessTokenProvider;
+    private final RefreshTokenProvider  refreshTokenProvider;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -70,35 +64,12 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
         String email = authResult.getName();
         Register register = registerRepository.findByEmail(email).orElseThrow(ResourceNotFoundException::new);
         attemptsValidation.resetFailedAttempts(register);
-        List<String> authorities = authResult.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
 
-        String accessToken = Jwts.builder()
-                           .subject(authResult.getName())
-                           .issuedAt(new Date())
-                           .claim("authorities", authorities)
-                           .expiration(Date.from(Instant.now().plus(15, ChronoUnit.MINUTES)))
-                           .issuer("Calentra")
-                           .signWith(SignKey.getSecretKey())
-                           .compact();
-        ResponseCookie accessCookie = ResponseCookie.from("access_token", accessToken)
-                .httpOnly(true)
-                .secure(false) // true in production HTTPS
-                .sameSite("Lax")
-                .path("/")
-                .maxAge(Duration.ofMinutes(15))
-                .build();
+        String accessToken = accessTokenProvider.generateAccessToken(authResult.getName(), authResult.getAuthorities());
+        ResponseCookie accessCookie = accessTokenProvider.generateAccessCookie(accessToken);
 
-        RefreshToken refreshToken = refreshTokenServiceImpl.createRefreshToken(register.getId());
-        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken.getRefreshToken())
-                .httpOnly(true)
-                .secure(false)
-                .sameSite("Lax")
-                .path("/auth")
-                .maxAge(Duration.ofDays(7))
-                .build();
+        RefreshToken refreshToken = refreshTokenProvider.refreshToken(register.getId());
+        ResponseCookie refreshCookie = refreshTokenProvider.generateRefreshCookie(refreshToken);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());

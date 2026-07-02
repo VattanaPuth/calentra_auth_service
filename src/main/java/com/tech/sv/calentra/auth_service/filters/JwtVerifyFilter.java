@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AuthHeaderValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AuthHeaderValidationStrategy;
 import com.tech.sv.calentra.auth_service.utils.SignKey;
 
 import io.jsonwebtoken.Claims;

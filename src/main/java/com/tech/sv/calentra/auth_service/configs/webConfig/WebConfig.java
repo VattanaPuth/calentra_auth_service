@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.configs.authConfig;
+package com.tech.sv.calentra.auth_service.configs.webConfig;
 
 import java.util.List;
 
@@ -27,10 +27,12 @@ import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
 import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AuthHeaderValidationStrategy;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.AttemptsValidationStrategy;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.ContentLengthValidationStrategy;
-import com.tech.sv.calentra.auth_service.strategies.JwtValidateStrategy.impl.UsernamePasswordValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AttemptsValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AuthHeaderValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.ContentLengthValidationStrategy;
+import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.UsernamePasswordValidationStrategy;
+import com.tech.sv.calentra.auth_service.utils.TokenUtil.AccessTokenProvider;
+import com.tech.sv.calentra.auth_service.utils.TokenUtil.RefreshTokenProvider;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -38,16 +40,17 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class AuthConfig {
+public class WebConfig {
 
     private final UserDetailsService userDetailsService;
     private final ContentLengthValidationStrategy contentLengthValidation;
     private final UsernamePasswordValidationStrategy usernamePasswordValidation;
     private final AttemptsValidationStrategy attemptsValidation;
     private final RegisterRepository registerRepository;
-    private final RefreshTokenService refreshTokenServiceImpl;
     private final AuthHeaderValidationStrategy tokenExtractor;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final AccessTokenProvider accessTokenProvider;
+    private final RefreshTokenProvider  refreshTokenProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -79,13 +82,14 @@ public class AuthConfig {
     @Bean
     public JwtLoginFilter jwtLoginFilter() throws Exception {
         JwtLoginFilter filter =  new JwtLoginFilter(
-                contentLengthValidation,
-                usernamePasswordValidation,
-                attemptsValidation,
-                registerRepository,
-                refreshTokenServiceImpl,
-                getAuthenticationManager()
-        );
+	        		contentLengthValidation, 
+	        		usernamePasswordValidation, 
+	        		attemptsValidation, 
+	        		registerRepository, 
+	        		getAuthenticationManager(), 
+	        		accessTokenProvider, 
+	        		refreshTokenProvider
+        		);
 
         filter.setAuthenticationManager(getAuthenticationManager());
         filter.setFilterProcessesUrl("/auth/login");
