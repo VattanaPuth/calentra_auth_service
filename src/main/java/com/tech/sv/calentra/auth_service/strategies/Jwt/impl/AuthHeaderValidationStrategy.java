@@ -13,6 +13,7 @@ public class AuthHeaderValidationStrategy implements TokenExtractorStrategy<Http
 
     @Override
     public String extract(HttpServletRequest request) {
+    	
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {

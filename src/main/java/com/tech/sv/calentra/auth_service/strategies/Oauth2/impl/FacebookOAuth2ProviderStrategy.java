@@ -17,11 +17,6 @@ public class FacebookOAuth2ProviderStrategy implements Oauth2ProvidersStrategy{
 	}
 
 	@Override
-	public String nameAttributeKey() {
-	    return "id";
-	}
-
-	@Override
 	public OAuth2UserInfo extractUserInfo(Map<String, Object> attributes) {
         return new OAuth2UserInfo(
                 (String) attributes.get("id"),

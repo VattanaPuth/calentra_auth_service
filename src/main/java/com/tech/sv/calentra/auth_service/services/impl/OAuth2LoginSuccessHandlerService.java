@@ -69,8 +69,7 @@ public class OAuth2LoginSuccessHandlerService implements AuthenticationSuccessHa
 								.email(userInfo.email())
 								.username(userInfo.name())
 								.provider(provider)
-								.providerId(userInfo
-								.providerUserId())
+								.providerId(userInfo.providerUserId())
 								.avatarUrl(userInfo.avatarUrl())
 								.emailVerified(userInfo.emailVerified())
 								.build()));

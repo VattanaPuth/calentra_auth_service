@@ -17,11 +17,6 @@ public class GitHubOauth2ProvidersStrategy implements Oauth2ProvidersStrategy{
 	}
 
 	@Override
-	public String nameAttributeKey() {
-	    return "id";
-	}
-	
-	@Override
 	public OAuth2UserInfo extractUserInfo(Map<String, Object> attributes) {
 		String name = (String) attributes.get("name");
 
@@ -32,6 +27,8 @@ public class GitHubOauth2ProvidersStrategy implements Oauth2ProvidersStrategy{
 				(String) attributes.get("id"), 
 				(String) attributes.get("email"), 
 				name,
-				(String) attributes.get("avatar_url"), false);
+				(String) attributes.get("avatar_url"), 
+				false
+			);
 	}
 }

@@ -7,6 +7,5 @@ import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
 
 public interface Oauth2ProvidersStrategy {
     OAuth2Providers provider();
-    String nameAttributeKey();
     OAuth2UserInfo extractUserInfo(Map<String, Object> attributes);
 }

@@ -5,5 +5,5 @@ public record OAuth2UserInfo(
         String email,
         String name,
         String avatarUrl,
-        boolean emailVerified
+        Boolean emailVerified
 ) {}

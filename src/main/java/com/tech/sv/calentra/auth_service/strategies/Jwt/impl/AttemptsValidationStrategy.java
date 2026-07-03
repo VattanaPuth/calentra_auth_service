@@ -26,6 +26,7 @@ public class AttemptsValidationStrategy implements ValidationRuleStrategy<Regist
 
     @Override
     public void validate(Register register) {
+    	
         if (register == null) {
             throw new ResourceNotFoundException();
         }
@@ -54,6 +55,7 @@ public class AttemptsValidationStrategy implements ValidationRuleStrategy<Regist
     }
 
     public void increaseFailedAttempts(Register register) {
+    	
         if (register == null) {
             throw new ResourceNotFoundException();
         }
@@ -75,6 +77,7 @@ public class AttemptsValidationStrategy implements ValidationRuleStrategy<Regist
     }
 
     public void resetFailedAttempts(Register register) {
+    	
         if (register == null) {
             throw new ResourceNotFoundException();
         }

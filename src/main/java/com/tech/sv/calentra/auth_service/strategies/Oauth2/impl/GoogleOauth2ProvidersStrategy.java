@@ -17,17 +17,12 @@ public class GoogleOauth2ProvidersStrategy implements Oauth2ProvidersStrategy{
 	}
 
 	@Override
-	public String nameAttributeKey() {
-		return "sub";
-	}
-
-	@Override
 	public OAuth2UserInfo extractUserInfo(Map<String, Object> attributes) {
 		return new OAuth2UserInfo(
 						(String) attributes.get("sub"),
 						(String) attributes.get("email"),
 						(String) attributes.get("name"),
-						(String) attributes.get("avatarUrl"),
+						(String) attributes.get("picture"),
 					    Boolean.TRUE.equals(attributes.get("email_verified"))
 					);
 
