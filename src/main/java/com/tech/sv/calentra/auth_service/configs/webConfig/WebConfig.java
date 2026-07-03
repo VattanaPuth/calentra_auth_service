@@ -91,7 +91,6 @@ public class WebConfig {
 	        		refreshTokenProvider
         		);
 
-        filter.setAuthenticationManager(getAuthenticationManager());
         filter.setFilterProcessesUrl("/auth/login");
         return filter;
     }

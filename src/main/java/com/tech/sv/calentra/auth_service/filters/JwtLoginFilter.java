@@ -30,16 +30,33 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ContentLengthValidationStrategy contentLengthValidation;
     private final UsernamePasswordValidationStrategy usernamePasswordValidation;
     private final AttemptsValidationStrategy attemptsValidation;
     private final RegisterRepository registerRepository;
-    private final AuthenticationManager authenticationManager;
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenProvider  refreshTokenProvider;
+    
+    public JwtLoginFilter(
+            ContentLengthValidationStrategy contentLengthValidation,
+            UsernamePasswordValidationStrategy usernamePasswordValidation,
+            AttemptsValidationStrategy attemptsValidation,
+            RegisterRepository registerRepository,
+            AuthenticationManager authenticationManager,
+            AccessTokenProvider accessTokenProvider,
+            RefreshTokenProvider refreshTokenProvider
+    ) {
+        super(authenticationManager);
+
+        this.contentLengthValidation = contentLengthValidation;
+        this.usernamePasswordValidation = usernamePasswordValidation;
+        this.attemptsValidation = attemptsValidation;
+        this.registerRepository = registerRepository;
+        this.accessTokenProvider = accessTokenProvider;
+        this.refreshTokenProvider = refreshTokenProvider;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -52,7 +69,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             Register register = registerRepository.findByEmail(loginRequest.getEmail()).orElseThrow(ResourceNotFoundException::new);
             attemptsValidation.validate(register);
             Authentication auth = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-            return authenticationManager.authenticate(auth);
+            return getAuthenticationManager().authenticate(auth);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
