@@ -5,16 +5,15 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
 import com.tech.sv.calentra.auth_service.strategies.Oauth2.Oauth2ProvidersStrategy;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
+@Component
 public class Oauth2ProviderStrategyFactory {
 
 	private final Map<OAuth2Providers, Oauth2ProvidersStrategy> factories;
-	
 	
 	public Oauth2ProviderStrategyFactory(List<Oauth2ProvidersStrategy> StrategyList) {
 		this.factories = StrategyList.stream()

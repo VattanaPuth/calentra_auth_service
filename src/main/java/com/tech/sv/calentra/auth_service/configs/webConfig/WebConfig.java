@@ -26,7 +26,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.tech.sv.calentra.auth_service.filters.JwtLoginFilter;
 import com.tech.sv.calentra.auth_service.filters.JwtVerifyFilter;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
-import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AttemptsValidationStrategy;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.AuthHeaderValidationStrategy;
 import com.tech.sv.calentra.auth_service.strategies.Jwt.impl.ContentLengthValidationStrategy;
@@ -79,26 +78,6 @@ public class WebConfig {
                 .build();
     }
 
-    @Bean
-    public JwtLoginFilter jwtLoginFilter() throws Exception {
-        JwtLoginFilter filter =  new JwtLoginFilter(
-	        		contentLengthValidation, 
-	        		usernamePasswordValidation, 
-	        		attemptsValidation, 
-	        		registerRepository, 
-	        		getAuthenticationManager(), 
-	        		accessTokenProvider, 
-	        		refreshTokenProvider
-        		);
-
-        filter.setFilterProcessesUrl("/auth/login");
-        return filter;
-    }
-
-    @Bean
-    public JwtVerifyFilter jwtVerifyFilter(){
-        return new JwtVerifyFilter(tokenExtractor);
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -113,8 +92,29 @@ public class WebConfig {
     }
 
     @Bean
-    public AuthenticationManager getAuthenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+    
+    @Bean
+    public JwtLoginFilter jwtLoginFilter() throws Exception {
+        JwtLoginFilter filter =  new JwtLoginFilter(
+	        		contentLengthValidation, 
+	        		usernamePasswordValidation, 
+	        		attemptsValidation, 
+	        		registerRepository, 
+	        		authenticationManager(), 
+	        		accessTokenProvider, 
+	        		refreshTokenProvider
+        		);
+
+        filter.setFilterProcessesUrl("/auth/login");
+        return filter;
+    }
+
+    @Bean
+    public JwtVerifyFilter jwtVerifyFilter(){
+        return new JwtVerifyFilter(tokenExtractor);
     }
 
     @Bean

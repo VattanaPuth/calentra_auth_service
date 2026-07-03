@@ -49,7 +49,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             RefreshTokenProvider refreshTokenProvider
     ) {
         super(authenticationManager);
-
         this.contentLengthValidation = contentLengthValidation;
         this.usernamePasswordValidation = usernamePasswordValidation;
         this.attemptsValidation = attemptsValidation;

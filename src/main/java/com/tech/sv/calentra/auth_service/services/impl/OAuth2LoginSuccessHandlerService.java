@@ -1,7 +1,6 @@
 package com.tech.sv.calentra.auth_service.services.impl;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -16,6 +15,7 @@ import com.tech.sv.calentra.auth_service.dtos.records.OAuth2UserInfo;
 import com.tech.sv.calentra.auth_service.entities.RefreshToken;
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
+import com.tech.sv.calentra.auth_service.factories.Oauth2ProviderStrategyFactory;
 import com.tech.sv.calentra.auth_service.repositories.RegisterRepository;
 import com.tech.sv.calentra.auth_service.strategies.Oauth2.Oauth2ProvidersStrategy;
 import com.tech.sv.calentra.auth_service.utils.AccessTokenProvider;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandlerService implements AuthenticationSuccessHandler {
 
-	private final List<Oauth2ProvidersStrategy> strategies;
+	private final Oauth2ProviderStrategyFactory strategyFactory;
 	private final RegisterRepository registerRepository;
 	private final AccessTokenProvider accessTokenProvider;
 	private final RefreshTokenProvider refreshTokenProvider;
@@ -40,10 +40,7 @@ public class OAuth2LoginSuccessHandlerService implements AuthenticationSuccessHa
 		String registrationId = extractRegistrationId(authentication);
 		OAuth2Providers provider = OAuth2Providers.valueOf(registrationId.toUpperCase());
 
-		Oauth2ProvidersStrategy strategy = strategies.stream()
-				.filter(s -> s.provider() == provider)
-				.findFirst()
-				.orElseThrow(() -> new IllegalStateException("No strategy for provider: " + provider));
+		Oauth2ProvidersStrategy strategy = strategyFactory.getStrategies(provider);
 
 		OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 		Map<String, Object> attributes = oAuth2User.getAttributes();
