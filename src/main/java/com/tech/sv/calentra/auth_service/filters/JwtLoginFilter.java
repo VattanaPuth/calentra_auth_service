@@ -68,7 +68,7 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
             Register register = registerRepository.findByEmail(loginRequest.getEmail()).orElseThrow(ResourceNotFoundException::new);
             attemptsValidation.validate(register);
             Authentication auth = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-            return getAuthenticationManager().authenticate(auth);
+            return getAuthenticationManager().authenticate(auth); 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

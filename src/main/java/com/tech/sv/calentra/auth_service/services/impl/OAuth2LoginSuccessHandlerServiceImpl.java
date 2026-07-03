@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2LoginSuccessHandlerService implements AuthenticationSuccessHandler {
+public class OAuth2LoginSuccessHandlerServiceImpl implements AuthenticationSuccessHandler {
 
 	private final Oauth2ProviderStrategyFactory strategyFactory;
 	private final RegisterRepository registerRepository;

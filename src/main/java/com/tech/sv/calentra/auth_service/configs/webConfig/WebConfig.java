@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -50,6 +52,7 @@ public class WebConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenProvider  refreshTokenProvider;
+    private final AuthenticationSuccessHandler OAuth2LoginSuccessHandlerServiceImpl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -60,19 +63,33 @@ public class WebConfig {
                 .authenticationProvider(getAuthenticationProvider())
                 .authorizeHttpRequests(rq -> rq
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login", "/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/logout")
-                        .access(new WebExpressionAuthorizationManager("isAuthenticated()"))
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").access(new WebExpressionAuthorizationManager("isAuthenticated()"))
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtVerifyFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(OAuth2LoginSuccessHandlerServiceImpl)
+                        .failureHandler((request, response, exception) -> {
+							response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+							response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.getWriter().write(
+                            		"""
+	                                    {
+	                                      "status": "UNAUTHORIZED",
+	                                      "message": "OAuth2 authentication failed."
+	                                    }
+                                    """);
+                        })
+                )
                 .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
-                    response.getWriter().write("""
-                        {
-                            "status": "UNAUTHORIZED",
-                            "message": "Please sign in to continue."
-                        }
+                    response.getWriter().write(
+                    	"""
+	                        {
+	                            "status": "UNAUTHORIZED",
+	                            "message": "Please sign in to continue."
+	                        }
                         """);
                 }))
                 .build();
