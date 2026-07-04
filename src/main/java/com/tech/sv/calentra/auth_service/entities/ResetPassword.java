@@ -25,6 +25,6 @@ public class ResetPassword {
 	private boolean token = false;
 	
 	@ManyToOne
-	@JoinColumn(name = "register_id", columnDefinition = "id")
+	@JoinColumn(name = "register_id", referencedColumnName = "id")
 	private Register register;
 }
