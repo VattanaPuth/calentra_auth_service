@@ -8,6 +8,8 @@ import com.tech.sv.calentra.auth_service.mappers.RegisterMapper;
 import com.tech.sv.calentra.auth_service.services.LogoutService;
 import com.tech.sv.calentra.auth_service.services.RefreshTokenService;
 import com.tech.sv.calentra.auth_service.services.RegisterService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class AuthController {
     private final LogoutService logoutServiceImpl;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequestDTO){
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDTO registerRequestDTO){
         Register register = registerMapper.toRegister(registerRequestDTO);
         register = registerServiceImpl.register(register);
         return ResponseEntity.status(HttpStatus.CREATED).body(registerMapper.toRegisterResponseDto(register));
