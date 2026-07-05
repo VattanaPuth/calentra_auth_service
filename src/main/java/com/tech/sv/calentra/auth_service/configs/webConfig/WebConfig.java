@@ -61,10 +61,8 @@ public class WebConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corConfigurationSource()))
-                .csrf(csrf -> 
-                			csrf.csrfTokenRepository(csrfTokenRepository())
-                				.csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())		
-                		)
+                .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository())
+                				  .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(getAuthenticationProvider())
                 .authorizeHttpRequests(rq -> rq
