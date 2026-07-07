@@ -1,13 +1,12 @@
 package com.tech.sv.calentra.auth_service.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import lombok.Builder;
 
 @Builder
 public class CustomUserDetails implements UserDetails {
