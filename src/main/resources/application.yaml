@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: calentra
+    name: calentra_auth_service
 
   config:
     import: "classpath:env.yaml"
