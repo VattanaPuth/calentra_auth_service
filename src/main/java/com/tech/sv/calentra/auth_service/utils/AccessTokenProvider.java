@@ -17,7 +17,7 @@ import io.jsonwebtoken.Jwts;
 public class AccessTokenProvider {
 
 	private final String ISSUER_PATH = "/";
-    private final String ISSUER = "Calentra";
+    private final String ISSUER = "Valio";
     private final String AUTHORITIES = "authorities";
 
     public String generateAccessToken(String subject, Collection<? extends GrantedAuthority> authorities) {

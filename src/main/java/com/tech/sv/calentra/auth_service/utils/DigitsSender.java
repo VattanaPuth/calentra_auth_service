@@ -15,7 +15,7 @@ public class DigitsSender {
 	public void sendDigits(String to, String digits) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setFrom("noreply@calentra.com");
+        mailMessage.setFrom("noreply@valio.com");
         mailMessage.setTo(to);
         mailMessage.setSubject("Reset your password");
         mailMessage.setText("Your verification code is: " + digits);
