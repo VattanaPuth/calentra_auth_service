@@ -83,6 +83,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService{
 		newReset.setRegister(registerEmail);
 		newReset.setExpiredAt(LocalDateTime.now().plusMinutes(2));
 		newReset.setToken(false);
+		
 		passwordRepository.save(newReset);
 		digitsSender.sendDigits(registerEmail.getEmail(), newHashCode);
 		

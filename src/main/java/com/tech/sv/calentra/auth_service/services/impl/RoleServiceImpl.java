@@ -25,7 +25,12 @@ public class RoleServiceImpl implements RoleService{
 
 	private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
-
+    
+    @Override
+    public Role getById(UUID roleId) {
+        return roleRepository.findByIdWithPermissions(roleId).orElseThrow(() -> new ResourceNotFoundException());
+    }
+    
     @Transactional
     @Override
     public Role create(RoleRequestDTO request) {
@@ -36,16 +41,13 @@ public class RoleServiceImpl implements RoleService{
         role.setName(request.name().toUpperCase());
         role.setDescription(request.description());
         role.setPermissions(permissions(request.permissionIds()));
-
         return roleRepository.save(role);
     }
 
     @Transactional
     @Override
     public Role update(UUID roleId, RoleRequestDTO request) {
-        Role role = roleRepository.findByIdWithPermissions(roleId)
-            .orElseThrow(() -> new ResourceNotFoundException());
-
+        Role role = getById(roleId);
         role.setName(request.name());
         role.setDescription(request.description());
         role.setPermissions(permissions(request.permissionIds()));
@@ -55,14 +57,8 @@ public class RoleServiceImpl implements RoleService{
     @Transactional
     @Override
     public void delete(UUID roleId) {
-        Role role = roleRepository.findById(roleId)
-            .orElseThrow(() -> new ResourceNotFoundException());
+        Role role = roleRepository.findById(roleId).orElseThrow(() -> new ResourceNotFoundException());
         roleRepository.delete(role);
-    }
-
-    public Role getById(UUID roleId) {
-        return roleRepository.findByIdWithPermissions(roleId)
-            .orElseThrow(() -> new ResourceNotFoundException());
     }
 
     @Override
@@ -73,28 +69,20 @@ public class RoleServiceImpl implements RoleService{
 	@Transactional
 	@Override
 	public Role attachPermission(UUID roleId, UUID permissionId) {
-	    Role role = roleRepository.findByIdWithPermissions(roleId)
-	        .orElseThrow(() -> new ResourceNotFoundException());
-
-	    Permission permission = permissionRepository.findById(permissionId)
-	        .orElseThrow(() -> new ResourceNotFoundException());
-
+		Role role = getById(roleId);
+		Permission permission = permissionRepository.findById(permissionId).orElseThrow(() -> new ResourceNotFoundException());
 	    role.getPermissions().add(permission);
-
 	    return roleRepository.save(role);
 	}
 
 	@Transactional
 	@Override
 	public Role detachPermission(UUID roleId, UUID permissionId) {
-	    Role role = roleRepository.findByIdWithPermissions(roleId)
-	        .orElseThrow(() -> new ResourceNotFoundException());
-
+	    Role role = getById(roleId);
 	    boolean removed = role.getPermissions().removeIf(p -> p.getId().equals(permissionId));
-	    if (!removed) {
-	        throw new ResourceNotFoundException();
-	    }
-
+		if (!removed) {
+			throw new ResourceNotFoundException();
+		}
 	    return roleRepository.save(role);
 	}
 	
