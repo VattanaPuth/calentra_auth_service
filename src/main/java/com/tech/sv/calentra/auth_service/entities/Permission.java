@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Permission {
+public class Permission{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

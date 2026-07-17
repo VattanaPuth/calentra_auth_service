@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
+public class Role{
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;

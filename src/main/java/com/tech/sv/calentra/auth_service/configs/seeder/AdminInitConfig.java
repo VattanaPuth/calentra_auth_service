@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.configs.webConfig;
+package com.tech.sv.calentra.auth_service.configs.seeder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,7 +61,7 @@ public class AdminInitConfig {
                 .orElseGet(() -> Role.builder()
 	                        .name(adminRole)
 	                        .description(description)
-	                        .permissions(new HashSet<>())
+	                        .permissions(new HashSet<>())	                        
 	                        .build()
                 );
     }

@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.tech.sv.calentra.auth_service.dtos.records.OAuth2UserInfo;
+import com.tech.sv.calentra.auth_service.dtos.responses.OAuth2UserInfo;
 import com.tech.sv.calentra.auth_service.entities.RefreshToken;
 import com.tech.sv.calentra.auth_service.entities.Register;
 import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
@@ -78,4 +78,5 @@ public class OAuth2LoginSuccessHandlerServiceImpl implements AuthenticationSucce
 		}
 		throw new IllegalStateException("Unexpected authentication type: " + authentication.getClass());
 	}
+	
 }

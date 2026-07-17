@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.tech.sv.calentra.auth_service.dtos.records.OAuth2UserInfo;
+import com.tech.sv.calentra.auth_service.dtos.responses.OAuth2UserInfo;
 import com.tech.sv.calentra.auth_service.enums.OAuth2Providers;
 import com.tech.sv.calentra.auth_service.strategies.Oauth2.Oauth2ProvidersStrategy;
 

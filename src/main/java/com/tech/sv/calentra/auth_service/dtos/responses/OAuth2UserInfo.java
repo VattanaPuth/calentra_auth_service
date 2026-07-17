@@ -1,4 +1,4 @@
-package com.tech.sv.calentra.auth_service.dtos.records;
+package com.tech.sv.calentra.auth_service.dtos.responses;
 
 public record OAuth2UserInfo(
         String providerUserId,
